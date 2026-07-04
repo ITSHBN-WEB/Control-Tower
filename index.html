@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHBN Control Tower</title>
+<style>
+  :root{
+    --bg: #0b0f17;
+    --panel: #121824;
+    --panel-border: #202838;
+    --text: #e8ecf3;
+    --muted: #8792a3;
+    --gondola: #7c6bf0;
+    --gondola-soft: rgba(124,107,240,0.12);
+    --product: #22c55e;
+    --product-soft: rgba(34,197,94,0.12);
+    --stock: #f0a63c;
+    --stock-soft: rgba(240,166,60,0.12);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background: radial-gradient(circle at 15% 0%, #131a28 0%, var(--bg) 45%);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    min-height:100vh;
+    padding: 40px 24px 60px;
+  }
+  header{
+    max-width: 1100px;
+    margin: 0 auto 36px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .brand-mark{
+    width:44px;height:44px;
+    border-radius:12px;
+    background: linear-gradient(135deg, var(--gondola), var(--product));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:16px;
+    color:#0b0f17;
+    flex-shrink:0;
+  }
+  .brand h1{
+    margin:0;
+    font-size:22px;
+    letter-spacing:0.2px;
+  }
+  .brand p{
+    margin:2px 0 0;
+    font-size:12.5px;
+    color: var(--muted);
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+  }
+  .timestamp{
+    font-size:12.5px;
+    color: var(--muted);
+    text-align:right;
+  }
+
+  .grid{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:20px;
+  }
+
+  .card{
+    background: var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    padding:22px 22px 20px;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+  .card:hover{
+    transform: translateY(-3px);
+    border-color:#2c3648;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+  }
+  .card.gondola::before{ background: var(--gondola); }
+  .card.product::before{ background: var(--product); }
+  .card.stock::before{ background: var(--stock); }
+
+  .card-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .card-icon{
+    width:38px;height:38px;
+    border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    flex-shrink:0;
+  }
+  .card.gondola .card-icon{ background: var(--gondola-soft); color: var(--gondola); }
+  .card.product .card-icon{ background: var(--product-soft); color: var(--product); }
+  .card.stock .card-icon{ background: var(--stock-soft); color: var(--stock); }
+
+  .card-head h2{
+    margin:0;
+    font-size:17px;
+  }
+  .card-head span.tag{
+    display:block;
+    font-size:12px;
+    color: var(--muted);
+    margin-top:2px;
+  }
+
+  .card p.desc{
+    margin:0;
+    font-size:13px;
+    color: var(--muted);
+    line-height:1.5;
+  }
+
+  .links{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    margin-top:auto;
+  }
+  .link-btn{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    text-decoration:none;
+    padding:10px 14px;
+    border-radius:9px;
+    border:1px solid var(--panel-border);
+    background: #0e131d;
+    color: var(--text);
+    font-size:13.5px;
+    font-weight:500;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .link-btn:hover{
+    background:#171f2d;
+  }
+  .card.gondola .link-btn:hover{ border-color: var(--gondola); }
+  .card.product .link-btn:hover{ border-color: var(--product); }
+  .card.stock .link-btn:hover{ border-color: var(--stock); }
+
+  .link-btn .arrow{
+    color: var(--muted);
+    font-size:13px;
+  }
+  .link-btn.primary{
+    background: transparent;
+  }
+  .link-btn.secondary{
+    opacity:0.92;
+  }
+
+  footer{
+    max-width:1100px;
+    margin:40px auto 0;
+    text-align:center;
+    color: var(--muted);
+    font-size:12px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">SB</div>
+    <div>
+      <h1>SHBN Control Tower</h1>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake</p>
+    </div>
+  </div>
+  <div class="timestamp" id="timestamp"></div>
+</header>
+
+<div class="grid">
+
+  <!-- Harga Gondola -->
+  <div class="card gondola">
+    <div class="card-head">
+      <div class="card-icon">🛒</div>
+      <div>
+        <h2>Harga Gondola</h2>
+        <span class="tag">Gondola pricing</span>
+      </div>
+    </div>
+    <p class="desc">Track gondola prices and manage staff entries for pricing updates.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1CQdsPyyGt_QKMwvNCdoauVbBbZ6FcBtm2tUnm7v6kOs/edit?gid=658349383#gid=658349383" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycby4vP80h3Q7TSiw7zCcDhvujS7M-t9qn7GKcKdF3DPV6wJ1a57O6Ai78LG11sImPYc/exec" target="_blank" rel="noopener">
+        <span>🧾 Staff Entry Form</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Product Check -->
+  <div class="card product">
+    <div class="card-head">
+      <div class="card-icon">✅</div>
+      <div>
+        <h2>Product Check</h2>
+        <span class="tag">Department verification</span>
+      </div>
+    </div>
+    <p class="desc">Verify product details by department and keep records up to date.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1GGqqTd_1PJccDHfkr36f1UxjEX-7IngxCRCDRpwc-lA/edit?gid=1260093114#gid=1260093114" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycbxdllb3lMtlNdXUT2LXGkJqvS7NjREEpUYtLhHl0pmjkd4-4EboICPbTsljwO6RWsxc/exec" target="_blank" rel="noopener">
+        <span>🧾 Product Check App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Stocktake -->
+  <div class="card stock">
+    <div class="card-head">
+      <div class="card-icon">📦</div>
+      <div>
+        <h2>Stocktake</h2>
+        <span class="tag">Inventory count</span>
+      </div>
+    </div>
+    <p class="desc">Run stocktakes in the field and review or manage results as admin.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1-GQXZ_Lm0QkKn6f7HubWU0eZPhSi3ptBrFqUN7j3lec/edit?gid=1283110477#gid=1283110477" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/Stocktake-App/" target="_blank" rel="noopener">
+        <span>🧾 Stocktake App</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/Stocktake-App/admin.html" target="_blank" rel="noopener">
+        <span>🛠 Stocktake Admin</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>SHBN Control Tower &middot; Internal tools directory</footer>
+
+<script>
+  function updateTimestamp(){
+    const now = new Date();
+    const opts = { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+    document.getElementById('timestamp').textContent = "Last opened " + now.toLocaleString('en-GB', opts);
+  }
+  updateTimestamp();
+</script>
+
+</body>
+</html>
