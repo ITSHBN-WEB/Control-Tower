@@ -19,6 +19,8 @@
     --stock-soft: rgba(240,166,60,0.12);
     --ownuse: #2dd4bf;
     --ownuse-soft: rgba(45,212,191,0.12);
+    --returns: #fb7185;
+    --returns-soft: rgba(251,113,133,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -104,6 +106,7 @@
   .card.product::before{ background: var(--product); }
   .card.stock::before{ background: var(--stock); }
   .card.ownuse::before{ background: var(--ownuse); }
+  .card.returns::before{ background: var(--returns); }
 
   .card-head{
     display:flex;
@@ -121,6 +124,7 @@
   .card.product .card-icon{ background: var(--product-soft); color: var(--product); }
   .card.stock .card-icon{ background: var(--stock-soft); color: var(--stock); }
   .card.ownuse .card-icon{ background: var(--ownuse-soft); color: var(--ownuse); }
+  .card.returns .card-icon{ background: var(--returns-soft); color: var(--returns); }
 
   .card-head h2{
     margin:0;
@@ -167,6 +171,7 @@
   .card.product .link-btn:hover{ border-color: var(--product); }
   .card.stock .link-btn:hover{ border-color: var(--stock); }
   .card.ownuse .link-btn:hover{ border-color: var(--ownuse); }
+  .card.returns .link-btn:hover{ border-color: var(--returns); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -195,7 +200,7 @@
     <div class="brand-mark">SB</div>
     <div>
       <h1>SHBN Control Tower</h1>
-      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log</p>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log</p>
     </div>
   </div>
   <div class="timestamp" id="timestamp"></div>
@@ -289,6 +294,28 @@
       </a>
       <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycbwG1piVhe4s1l_Xc9JPig5BjDWDidOgEj1WbxFtlV0wKsy6UTFKaZDV-nu8w8PU1P03sg/exec" target="_blank" rel="noopener">
         <span>🧾 Own Use Log App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Supplier Return Log -->
+  <div class="card returns">
+    <div class="card-head">
+      <div class="card-icon">↩️</div>
+      <div>
+        <h2>Supplier Return Log</h2>
+        <span class="tag">Return tracking</span>
+      </div>
+    </div>
+    <p class="desc">Log new supplier returns and track pending items through to resolution.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1JJWTP82Q5PzWtGkUK341O5DCbh0WLimwca_Q5SXUT9Q/edit?gid=318813222#gid=318813222" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycbyvQ8wI1IpwM4DTaBbz76SS74HHuI5lI3WBQZDmiXLm_DGFMr6LXsbfhcQLuCXsWnILDw/exec" target="_blank" rel="noopener">
+        <span>🧾 Supplier Return Log App</span>
         <span class="arrow">↗</span>
       </a>
     </div>
