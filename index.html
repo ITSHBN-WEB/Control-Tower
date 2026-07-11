@@ -21,6 +21,8 @@
     --ownuse-soft: rgba(45,212,191,0.12);
     --returns: #fb7185;
     --returns-soft: rgba(251,113,133,0.12);
+    --chicken: #e8a33d;
+    --chicken-soft: rgba(232,163,61,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -107,6 +109,7 @@
   .card.stock::before{ background: var(--stock); }
   .card.ownuse::before{ background: var(--ownuse); }
   .card.returns::before{ background: var(--returns); }
+  .card.chicken::before{ background: var(--chicken); }
 
   .card-head{
     display:flex;
@@ -125,6 +128,7 @@
   .card.stock .card-icon{ background: var(--stock-soft); color: var(--stock); }
   .card.ownuse .card-icon{ background: var(--ownuse-soft); color: var(--ownuse); }
   .card.returns .card-icon{ background: var(--returns-soft); color: var(--returns); }
+  .card.chicken .card-icon{ background: var(--chicken-soft); color: var(--chicken); }
 
   .card-head h2{
     margin:0;
@@ -172,6 +176,7 @@
   .card.stock .link-btn:hover{ border-color: var(--stock); }
   .card.ownuse .link-btn:hover{ border-color: var(--ownuse); }
   .card.returns .link-btn:hover{ border-color: var(--returns); }
+  .card.chicken .link-btn:hover{ border-color: var(--chicken); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -200,7 +205,7 @@
     <div class="brand-mark">SB</div>
     <div>
       <h1>SHBN Control Tower</h1>
-      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log</p>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log</p>
     </div>
   </div>
   <div class="timestamp" id="timestamp"></div>
@@ -316,6 +321,27 @@
       </a>
       <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycbyvQ8wI1IpwM4DTaBbz76SS74HHuI5lI3WBQZDmiXLm_DGFMr6LXsbfhcQLuCXsWnILDw/exec" target="_blank" rel="noopener">
         <span>🧾 Supplier Return Log App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+  <!-- Chicken Processing Log -->
+  <div class="card chicken">
+    <div class="card-head">
+      <div class="card-icon">🐔</div>
+      <div>
+        <h2>Chicken Processing Log</h2>
+        <span class="tag">Fresh Market transformation</span>
+      </div>
+    </div>
+    <p class="desc">Log chicken processing entries and track items pending IT / Material Document processing.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/14g-JzeCkFKwwhSB8_F_ImzkZgAuuJdz3_6t13WTFcDM/edit?gid=0#gid=0" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-PROCESSING-LOG/" target="_blank" rel="noopener">
+        <span>🧾 Chicken Processing Log App</span>
         <span class="arrow">↗</span>
       </a>
     </div>
