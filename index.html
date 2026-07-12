@@ -23,6 +23,8 @@
     --returns-soft: rgba(251,113,133,0.12);
     --chicken: #e8a33d;
     --chicken-soft: rgba(232,163,61,0.12);
+    --carton: #60a5fa;
+    --carton-soft: rgba(96,165,250,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -110,6 +112,7 @@
   .card.ownuse::before{ background: var(--ownuse); }
   .card.returns::before{ background: var(--returns); }
   .card.chicken::before{ background: var(--chicken); }
+  .card.carton::before{ background: var(--carton); }
 
   .card-head{
     display:flex;
@@ -129,6 +132,7 @@
   .card.ownuse .card-icon{ background: var(--ownuse-soft); color: var(--ownuse); }
   .card.returns .card-icon{ background: var(--returns-soft); color: var(--returns); }
   .card.chicken .card-icon{ background: var(--chicken-soft); color: var(--chicken); }
+  .card.carton .card-icon{ background: var(--carton-soft); color: var(--carton); }
 
   .card-head h2{
     margin:0;
@@ -177,6 +181,7 @@
   .card.ownuse .link-btn:hover{ border-color: var(--ownuse); }
   .card.returns .link-btn:hover{ border-color: var(--returns); }
   .card.chicken .link-btn:hover{ border-color: var(--chicken); }
+  .card.carton .link-btn:hover{ border-color: var(--carton); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -205,7 +210,7 @@
     <div class="brand-mark">SB</div>
     <div>
       <h1>SHBN Control Tower</h1>
-      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log</p>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator</p>
     </div>
   </div>
   <div class="timestamp" id="timestamp"></div>
@@ -342,6 +347,24 @@
       </a>
       <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-PROCESSING-LOG/" target="_blank" rel="noopener">
         <span>🧾 Chicken Processing Log App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Carton Label Generator -->
+  <div class="card carton">
+    <div class="card-head">
+      <div class="card-icon">🏷️</div>
+      <div>
+        <h2>Carton Label Generator</h2>
+        <span class="tag">Standalone tool</span>
+      </div>
+    </div>
+    <p class="desc">Generate and print sequenced carton labels for outbound shipments.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://itshbn-web.github.io/SHBN-TPL-GENERATOR/" target="_blank" rel="noopener">
+        <span>🧾 Carton Label Generator App</span>
         <span class="arrow">↗</span>
       </a>
     </div>
