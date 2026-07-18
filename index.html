@@ -156,6 +156,21 @@
     line-height:1.5;
   }
 
+  .pending-notice{
+    display:none;
+    font-size:12.5px;
+    font-weight:700;
+    font-style:italic;
+    color:#ef4444;
+    margin:6px 0 0;
+    animation: pending-blink 1.1s ease-in-out infinite;
+  }
+  .pending-notice.visible{ display:block; }
+  @keyframes pending-blink{
+    0%, 100%{ opacity:1; }
+    50%{ opacity:0.25; }
+  }
+
   .links{
     display:flex;
     flex-direction:column;
@@ -302,6 +317,7 @@
       </div>
     </div>
     <p class="desc">Log and track own use claims submitted by staff.</p>
+    <p class="pending-notice" id="ownuse-pending-notice"></p>
     <div class="links">
       <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1_dhMxo7RYLZVJz3QJug1qKwYU59DR-Va_0sLuZwkBgg/edit?gid=0#gid=0" target="_blank" rel="noopener">
         <span>📄 Google Sheet</span>
@@ -345,6 +361,7 @@
       </div>
     </div>
     <p class="desc">Log chicken processing entries and track items pending IT / Material Document processing.</p>
+    <p class="pending-notice" id="chicken-pending-notice"></p>
     <div class="links">
       <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/14g-JzeCkFKwwhSB8_F_ImzkZgAuuJdz3_6t13WTFcDM/edit?gid=0#gid=0" target="_blank" rel="noopener">
         <span>📄 Google Sheet</span>
@@ -404,6 +421,41 @@
     document.getElementById('timestamp').textContent = "Last opened " + now.toLocaleString('en-GB', opts);
   }
   updateTimestamp();
+
+  // ---------- Pending transaction notices ----------
+  // Fetches a live count from each app's own Apps Script backend (added as a
+  // small JSON API branch on doGet). Polling since Apps Script has no
+  // push/websocket mechanism - this is as close to "live" as is possible.
+  function renderPendingNotice(elId, count) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    if (count > 0) {
+      el.textContent = '! ' + count + ' pending transaction' + (count === 1 ? '' : 's');
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+    }
+  }
+
+  function fetchPendingCount(url, elId) {
+    fetch(url)
+      .then(function (res) { return res.json(); })
+      .then(function (data) { renderPendingNotice(elId, data.pendingCount || 0); })
+      .catch(function () { /* silent - next poll will retry */ });
+  }
+
+  var PENDING_SOURCES = [
+    { url: 'https://script.google.com/macros/s/AKfycbwG1piVhe4s1l_Xc9JPig5BjDWDidOgEj1WbxFtlV0wKsy6UTFKaZDV-nu8w8PU1P03sg/exec?api=pending', elId: 'ownuse-pending-notice' },
+    // Chicken Processing Log — pending IT/Key-In processing count
+    { url: 'https://script.google.com/macros/s/AKfycbyhhFfjKZUUkrXq9pI1I6MNnTtL4WEx-7j1MvS3AkKwUAZ4YekDtr-ZOEi4Ti_UcA/exec?action=pending', elId: 'chicken-pending-notice' }
+  ];
+
+  function pollAllPendingCounts() {
+    PENDING_SOURCES.forEach(function (src) { fetchPendingCount(src.url, src.elId); });
+  }
+
+  pollAllPendingCounts();
+  setInterval(pollAllPendingCounts, 30000); // refresh every 30s
 </script>
 
 </body>
