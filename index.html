@@ -25,6 +25,8 @@
     --chicken-soft: rgba(232,163,61,0.12);
     --carton: #60a5fa;
     --carton-soft: rgba(96,165,250,0.12);
+    --popcard: #e879b9;
+    --popcard-soft: rgba(232,121,185,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -113,6 +115,7 @@
   .card.returns::before{ background: var(--returns); }
   .card.chicken::before{ background: var(--chicken); }
   .card.carton::before{ background: var(--carton); }
+  .card.popcard::before{ background: var(--popcard); }
 
   .card-head{
     display:flex;
@@ -133,6 +136,7 @@
   .card.returns .card-icon{ background: var(--returns-soft); color: var(--returns); }
   .card.chicken .card-icon{ background: var(--chicken-soft); color: var(--chicken); }
   .card.carton .card-icon{ background: var(--carton-soft); color: var(--carton); }
+  .card.popcard .card-icon{ background: var(--popcard-soft); color: var(--popcard); }
 
   .card-head h2{
     margin:0;
@@ -182,6 +186,7 @@
   .card.returns .link-btn:hover{ border-color: var(--returns); }
   .card.chicken .link-btn:hover{ border-color: var(--chicken); }
   .card.carton .link-btn:hover{ border-color: var(--carton); }
+  .card.popcard .link-btn:hover{ border-color: var(--popcard); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -210,7 +215,7 @@
     <div class="brand-mark">SB</div>
     <div>
       <h1>SHBN Control Tower</h1>
-      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator</p>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator &middot; Popcard Generator</p>
     </div>
   </div>
   <div class="timestamp" id="timestamp"></div>
@@ -365,6 +370,24 @@
     <div class="links">
       <a class="link-btn primary" href="https://itshbn-web.github.io/SHBN-TPL-GENERATOR/" target="_blank" rel="noopener">
         <span>🧾 Carton Label Generator App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Popcard Generator -->
+  <div class="card popcard">
+    <div class="card-head">
+      <div class="card-icon">🎉</div>
+      <div>
+        <h2>Popcard Generator</h2>
+        <span class="tag">Standalone tool</span>
+      </div>
+    </div>
+    <p class="desc">Generate and print promo popcards (B1F1) in A4 or 2&times;2 layout.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://itshbn-web.github.io/SHBN-POPCARD-GENERATOR/" target="_blank" rel="noopener">
+        <span>🧾 Popcard Generator App</span>
         <span class="arrow">↗</span>
       </a>
     </div>
