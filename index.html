@@ -27,6 +27,10 @@
     --carton-soft: rgba(96,165,250,0.12);
     --popcard: #e879b9;
     --popcard-soft: rgba(232,121,185,0.12);
+    --badstock: #dc2626;
+    --badstock-soft: rgba(220,38,38,0.12);
+    --badstockeg: #64748b;
+    --badstockeg-soft: rgba(100,116,139,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -116,6 +120,8 @@
   .card.chicken::before{ background: var(--chicken); }
   .card.carton::before{ background: var(--carton); }
   .card.popcard::before{ background: var(--popcard); }
+  .card.badstock::before{ background: var(--badstock); }
+  .card.badstockeg::before{ background: var(--badstockeg); }
 
   .card-head{
     display:flex;
@@ -137,6 +143,8 @@
   .card.chicken .card-icon{ background: var(--chicken-soft); color: var(--chicken); }
   .card.carton .card-icon{ background: var(--carton-soft); color: var(--carton); }
   .card.popcard .card-icon{ background: var(--popcard-soft); color: var(--popcard); }
+  .card.badstock .card-icon{ background: var(--badstock-soft); color: var(--badstock); }
+  .card.badstockeg .card-icon{ background: var(--badstockeg-soft); color: var(--badstockeg); }
 
   .card-head h2{
     margin:0;
@@ -202,6 +210,8 @@
   .card.chicken .link-btn:hover{ border-color: var(--chicken); }
   .card.carton .link-btn:hover{ border-color: var(--carton); }
   .card.popcard .link-btn:hover{ border-color: var(--popcard); }
+  .card.badstock .link-btn:hover{ border-color: var(--badstock); }
+  .card.badstockeg .link-btn:hover{ border-color: var(--badstockeg); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -230,7 +240,7 @@
     <div class="brand-mark">SB</div>
     <div>
       <h1>SHBN Control Tower</h1>
-      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator &middot; Popcard Generator</p>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator &middot; Popcard Generator &middot; Bad Stock Logs</p>
     </div>
   </div>
   <div class="timestamp" id="timestamp"></div>
@@ -411,6 +421,50 @@
     <div class="links">
       <a class="link-btn primary" href="https://itshbn-web.github.io/SHBN-POPCARD-GENERATOR/" target="_blank" rel="noopener">
         <span>🧾 Popcard Generator App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bad Stock Fresh Market Log -->
+  <div class="card badstock">
+    <div class="card-head">
+      <div class="card-icon">🥩</div>
+      <div>
+        <h2>Bad Stock Fresh Market Log</h2>
+        <span class="tag">Fresh Market write-offs</span>
+      </div>
+    </div>
+    <p class="desc">Log and track bad stock entries from the Fresh Market department.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1oEeR-HFrM2qOQBIIszYg7_WdULCdueOMQBzSaVaaTA4/edit?gid=0#gid=0" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-BAD-STOCK-LOG/" target="_blank" rel="noopener">
+        <span>🧾 Bad Stock Log App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Bad Stock Supplier / EG Log -->
+  <div class="card badstockeg">
+    <div class="card-head">
+      <div class="card-icon">📋</div>
+      <div>
+        <h2>Bad Stock Supplier/EG Log</h2>
+        <span class="tag">Supplier &amp; EG write-offs</span>
+      </div>
+    </div>
+    <p class="desc">Log and track bad stock entries for supplier claims and EG write-offs.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/11dKKQ_6PJwiA4iBLb85c72epRVNFTDFO55bwMoHvoVQ/edit?gid=0#gid=0" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-BAD-STOCK-SUPPLIER-EG-LOG/" target="_blank" rel="noopener">
+        <span>🧾 Bad Stock Supplier/EG Log App</span>
         <span class="arrow">↗</span>
       </a>
     </div>
