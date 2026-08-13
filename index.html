@@ -436,6 +436,7 @@
       </div>
     </div>
     <p class="desc">Log and track bad stock entries from the Fresh Market department.</p>
+    <p class="pending-notice" id="badstock-pending-notice"></p>
     <div class="links">
       <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1oEeR-HFrM2qOQBIIszYg7_WdULCdueOMQBzSaVaaTA4/edit?gid=0#gid=0" target="_blank" rel="noopener">
         <span>📄 Google Sheet</span>
@@ -542,6 +543,20 @@
         { elId: 'returns-overdue-notice', formatter: function (data) {
           var c = data.overdueCount || 0;
           return c > 0 ? (c + ' RPO is 30 days overdue !') : '';
+        } }
+      ]
+    },
+    {
+      // Bad Stock Fresh Market Log — pending IT Entry / Material Document
+      // count. A "transaction" here is one date/category/staff/supervisor
+      // batch (same grouping the app's own IT Entry tab uses); it counts as
+      // pending as long as any row in that batch still has a blank
+      // Material Document (column N).
+      url: 'https://script.google.com/macros/s/AKfycbzY4L4WetJYsbWlKgNrjOhRxUKfo5vYeZZOe3pk7VDTMyCX8O1FdbhBQ02CPNVUwHBi/exec?action=pending',
+      notices: [
+        { elId: 'badstock-pending-notice', formatter: function (data) {
+          var c = data.pendingCount || 0;
+          return c > 0 ? ('! ' + c + ' pending transaction' + pluralS(c)) : '';
         } }
       ]
     },
