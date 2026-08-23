@@ -31,6 +31,8 @@
     --badstock-soft: rgba(220,38,38,0.12);
     --badstockeg: #64748b;
     --badstockeg-soft: rgba(100,116,139,0.12);
+    --invoice: #38bdf8;
+    --invoice-soft: rgba(56,189,248,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -122,6 +124,7 @@
   .card.popcard::before{ background: var(--popcard); }
   .card.badstock::before{ background: var(--badstock); }
   .card.badstockeg::before{ background: var(--badstockeg); }
+  .card.invoice::before{ background: var(--invoice); }
 
   .card-head{
     display:flex;
@@ -145,6 +148,7 @@
   .card.popcard .card-icon{ background: var(--popcard-soft); color: var(--popcard); }
   .card.badstock .card-icon{ background: var(--badstock-soft); color: var(--badstock); }
   .card.badstockeg .card-icon{ background: var(--badstockeg-soft); color: var(--badstockeg); }
+  .card.invoice .card-icon{ background: var(--invoice-soft); color: var(--invoice); }
 
   .card-head h2{
     margin:0;
@@ -212,6 +216,7 @@
   .card.popcard .link-btn:hover{ border-color: var(--popcard); }
   .card.badstock .link-btn:hover{ border-color: var(--badstock); }
   .card.badstockeg .link-btn:hover{ border-color: var(--badstockeg); }
+  .card.invoice .link-btn:hover{ border-color: var(--invoice); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -472,6 +477,29 @@
     </div>
   </div>
 
+  <!-- Departmental Invoice Record -->
+  <div class="card invoice">
+    <div class="card-head">
+      <div class="card-icon">🧮</div>
+      <div>
+        <h2>Departmental Invoice Record</h2>
+        <span class="tag">Invoice tracking</span>
+      </div>
+    </div>
+    <p class="desc">Record and track departmental invoices through to key-in completion.</p>
+    <p class="pending-notice" id="invoice-pending-notice"></p>
+    <div class="links">
+      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1udr3_CcOlqzQvqO78vRasIEUu9ieM2qn0g7ACrBjYRU/edit?gid=1511959977#gid=1511959977" target="_blank" rel="noopener">
+        <span>📄 Google Sheet</span>
+        <span class="arrow">↗</span>
+      </a>
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-DEPARTMENTAL-INVOICE-RECORD/" target="_blank" rel="noopener">
+        <span>🧾 Departmental Invoice Record App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
 </div>
 
 <footer>SHBN Control Tower &middot; Internal tools directory</footer>
@@ -572,6 +600,16 @@
         { elId: 'badstockeg-pending-notice', formatter: function (data) {
           var c = data.pendingCount || 0;
           return c > 0 ? ('! ' + c + ' pending transaction' + pluralS(c)) : '';
+        } }
+      ]
+    },
+    {
+      // Departmental Invoice Record — pending count from STATUS column
+      url: 'https://script.google.com/macros/s/AKfycbyiggSyV-bhBeoqKSPHt2UEc_96Qzfldp5lxeuYGrdeFQ_qzehOzfXCc1X-2ir2ok6K6A/exec?action=pending',
+      notices: [
+        { elId: 'invoice-pending-notice', formatter: function (data) {
+          var c = data.pendingCount || 0;
+          return c > 0 ? ('! ' + c + ' Pending Invoice' + pluralS(c)) : '';
         } }
       ]
     }
