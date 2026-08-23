@@ -439,10 +439,10 @@
     <p class="pending-notice" id="badstock-pending-notice"></p>
     <div class="links">
       <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1oEeR-HFrM2qOQBIIszYg7_WdULCdueOMQBzSaVaaTA4/edit?gid=0#gid=0" target="_blank" rel="noopener">
-        <span>📄 Google Sheet</span>
+        <span>📄 Google Sheet - Legacy</span>
         <span class="arrow">↗</span>
       </a>
-      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-BAD-STOCK-LOG/" target="_blank" rel="noopener">
+      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-BAD-STOCK-FRESH-MARKET-V2/" target="_blank" rel="noopener">
         <span>🧾 Bad Stock Log App</span>
         <span class="arrow">↗</span>
       </a>
@@ -552,6 +552,11 @@
       // batch (same grouping the app's own IT Entry tab uses); it counts as
       // pending as long as any row in that batch still has a blank
       // Material Document (column N).
+      // NOTE: Fresh Market's app has migrated to Supabase — this Apps
+      // Script endpoint is no longer being written to by the app, so this
+      // pending count will read stale/zero going forward. Once ready,
+      // swap this source for a direct Supabase count query the same way
+      // Fresh Market's own index.html and print-station.js were.
       url: 'https://script.google.com/macros/s/AKfycbwLq9JQ9SehAMoNjyhIOB-E4Gzl_s0oXbVzD5TXMN3w1AOgJHQJOadmNS6fy6cbDEVT/exec?action=pending',
       notices: [
         { elId: 'badstock-pending-notice', formatter: function (data) {
