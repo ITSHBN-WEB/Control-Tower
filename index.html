@@ -33,6 +33,8 @@
     --badstockeg-soft: rgba(100,116,139,0.12);
     --invoice: #38bdf8;
     --invoice-soft: rgba(56,189,248,0.12);
+    --ledger: #a78bfa;
+    --ledger-soft: rgba(167,139,250,0.12);
   }
   *{box-sizing:border-box;}
   body{
@@ -125,6 +127,7 @@
   .card.badstock::before{ background: var(--badstock); }
   .card.badstockeg::before{ background: var(--badstockeg); }
   .card.invoice::before{ background: var(--invoice); }
+  .card.ledger::before{ background: var(--ledger); }
 
   .card-head{
     display:flex;
@@ -149,6 +152,7 @@
   .card.badstock .card-icon{ background: var(--badstock-soft); color: var(--badstock); }
   .card.badstockeg .card-icon{ background: var(--badstockeg-soft); color: var(--badstockeg); }
   .card.invoice .card-icon{ background: var(--invoice-soft); color: var(--invoice); }
+  .card.ledger .card-icon{ background: var(--ledger-soft); color: var(--ledger); }
 
   .card-head h2{
     margin:0;
@@ -217,6 +221,7 @@
   .card.badstock .link-btn:hover{ border-color: var(--badstock); }
   .card.badstockeg .link-btn:hover{ border-color: var(--badstockeg); }
   .card.invoice .link-btn:hover{ border-color: var(--invoice); }
+  .card.ledger .link-btn:hover{ border-color: var(--ledger); }
 
   .link-btn .arrow{
     color: var(--muted);
@@ -245,7 +250,7 @@
     <div class="brand-mark">SB</div>
     <div>
       <h1>SHBN Control Tower</h1>
-      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator &middot; Popcard Generator &middot; Bad Stock Logs</p>
+      <p>Harga Gondola &middot; Product Check &middot; Stocktake &middot; Own Use Log &middot; Supplier Return Log &middot; Chicken Processing Log &middot; Carton Label Generator &middot; Popcard Generator &middot; Bad Stock Logs &middot; Stock Ledger</p>
     </div>
   </div>
   <div class="timestamp" id="timestamp"></div>
@@ -495,6 +500,24 @@
       </a>
       <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-DEPARTMENTAL-INVOICE-RECORD-V2//" target="_blank" rel="noopener">
         <span>🧾 Departmental Invoice Record App</span>
+        <span class="arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Stock Ledger -->
+  <div class="card ledger">
+    <div class="card-head">
+      <div class="card-icon">📚</div>
+      <div>
+        <h2>Stock Ledger</h2>
+        <span class="tag">Stock movement &amp; balance</span>
+      </div>
+    </div>
+    <p class="desc">Review stock ledger records, movements and balances in one place.</p>
+    <div class="links">
+      <a class="link-btn primary" href="https://shbn-stock-ledger.vercel.app/" target="_blank" rel="noopener">
+        <span>📊 Stock Ledger</span>
         <span class="arrow">↗</span>
       </a>
     </div>
