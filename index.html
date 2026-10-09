@@ -627,8 +627,9 @@
       ]
     },
     {
-      // Departmental Invoice Record — pending count from STATUS column
-      url: 'https://script.google.com/macros/s/AKfycbyiggSyV-bhBeoqKSPHt2UEc_96Qzfldp5lxeuYGrdeFQ_qzehOzfXCc1X-2ir2ok6K6A/exec?action=pending',
+      // Departmental Invoice Record — pending count from Neon/Postgres,
+      // via the Vercel API that replaced the old Apps Script backend.
+      url: 'https://shbn-departmental-invoice-record-v2.vercel.app/api/invoices?action=pending',
       notices: [
         { elId: 'invoice-pending-notice', formatter: function (data) {
           var c = data.pendingCount || 0;
