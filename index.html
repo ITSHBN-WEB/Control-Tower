@@ -456,8 +456,10 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       ]
     },
     {
-      // Supplier Return Log — pending RPO count + 30-day overdue count, from the same fetch
-      url: 'https://script.google.com/macros/s/AKfycbyvQ8wI1IpwM4DTaBbz76SS74HHuI5lI3WBQZDmiXLm_DGFMr6LXsbfhcQLuCXsWnILDw/exec?api=pending',
+      // GOTS (Goods Outbound Tracking System) — pending RPO count + 30-day overdue
+      // count, read live from the Neon/Postgres database via the GOTS Vercel API.
+      // (Replaces the old Google Sheet / Apps Script ?api=pending endpoint.)
+      url: 'https://shbn-goods-outbound-tracking-system.vercel.app/api/pending-count',
       notices: [
         { elId: 'returns-pending-notice', formatter: function (data) {
           var c = data.pendingCount || 0;
