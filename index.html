@@ -127,6 +127,37 @@ header{
 .card.carton .link-btn:hover{border-color:var(--carton)} .card.popcard .link-btn:hover{border-color:var(--popcard)}
 .card.badstock .link-btn:hover{border-color:var(--badstock)} .card.badstockeg .link-btn:hover{border-color:var(--badstockeg)}
 .card.invoice .link-btn:hover{border-color:var(--invoice)} .card.ledger .link-btn:hover{border-color:var(--ledger)} .card.printing .link-btn:hover{border-color:var(--printing)}
+.card.calendar::before{background:var(--calendar)}
+.card.calendar{grid-row:span 2}
+.card.calendar .card-icon{background:var(--calendar-soft);color:var(--calendar)}
+:root{--calendar:#22d3ee;--calendar-soft:rgba(34,211,238,.15)}
+.cal-nav{display:flex;align-items:center;gap:8px}
+.cal-nav strong{flex:1;text-align:center;font-size:14px}
+.cal-btn{background:rgba(5,17,33,.62);border:1px solid #1e3b5c;color:var(--text);border-radius:8px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s}
+.cal-btn:hover:not(:disabled){background:#112b4a;border-color:var(--calendar)}
+.cal-btn:disabled{opacity:.4;cursor:not-allowed}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow span{text-align:center;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.cal-day{position:relative;aspect-ratio:1.35/1;min-height:30px;border:1px solid transparent;border-radius:8px;background:rgba(5,17,33,.5);color:var(--text);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
+.cal-day:hover{border-color:var(--calendar)}
+.cal-day.other{opacity:.35}
+.cal-day.today{border-color:#38bdf8;box-shadow:inset 0 0 0 1px rgba(56,189,248,.5);font-weight:800}
+.cal-day.selected{background:rgba(34,211,238,.22);border-color:var(--calendar)}
+.cal-day.has-note::after{content:"";position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#f0a63c;box-shadow:0 0 6px rgba(240,166,60,.8)}
+.cal-day.remind::after{background:#fb7185;box-shadow:0 0 8px rgba(251,113,133,.9);animation:calBlink 1.2s ease-in-out infinite}
+@keyframes calBlink{50%{opacity:.25}}
+.cal-editor{display:flex;flex-direction:column;gap:7px;margin-top:auto}
+.cal-editor label{font-size:12px;font-weight:700;color:#a9bdd7}
+.cal-editor textarea{width:100%;resize:vertical;min-height:62px;background:rgba(5,17,33,.7);border:1px solid #1e3b5c;border-radius:9px;color:var(--text);font:inherit;font-size:12.5px;padding:9px 10px;outline:0}
+.cal-editor textarea:focus{border-color:var(--calendar)}
+.cal-actions{display:flex;align-items:center;gap:8px}
+.cal-save{border-color:rgba(34,211,238,.5)}
+.cal-del:hover:not(:disabled){border-color:#fb7185}
+.cal-status{font-size:11px;color:#6ee7b7}
+.cal-reminders{display:none;flex-direction:column;gap:6px}
+.cal-reminders.visible{display:flex}
+.cal-reminder{font-size:12px;font-weight:700;color:#ff9aa9;padding:7px 10px;background:rgba(251,113,133,.09);border:1px solid rgba(251,113,133,.25);border-radius:8px;cursor:pointer;line-height:1.4}
+.cal-reminder b{color:#ffd0d6}
 .quote-card{
   max-width:1500px;margin:20px auto 0;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
   padding:22px 24px;border-radius:16px;border:1px solid rgba(34,197,94,.35);
@@ -144,7 +175,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
 @media(max-width:650px){
  body{padding:16px 12px 22px}header{align-items:flex-start;margin-bottom:20px}.brand{min-width:0}.brand p{font-size:9px}.brand-mark{transform:scale(.82);transform-origin:left center;margin-right:-10px}
  .header-right{width:100%;gap:10px}.search-wrap{min-width:0;flex:1}.timestamp{text-align:left}
- .grid{grid-template-columns:1fr;gap:12px}.card{padding:17px}.card p.desc{min-height:0}
+ .grid{grid-template-columns:1fr;gap:12px}.card.calendar{grid-row:auto}.card{padding:17px}.card p.desc{min-height:0}
  .quote-card{grid-template-columns:auto 1fr;padding:17px;gap:12px}.quote-date{grid-column:2;text-align:left}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
@@ -213,32 +244,6 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
     </div>
   </div>
 
-  <!-- Product Check -->
-  <div class="card product">
-    <div class="card-head">
-      <div class="card-icon">✅</div>
-      <div>
-        <h2>Product Check</h2>
-        <span class="tag">Department verification</span>
-      </div>
-    </div>
-    <p class="desc">Verify product details by department and keep records up to date.</p>
-    <div class="links">
-      <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/1GGqqTd_1PJccDHfkr36f1UxjEX-7IngxCRCDRpwc-lA/edit?gid=1260093114#gid=1260093114" target="_blank" rel="noopener">
-        <span>📄 Google Sheet</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycbxdllb3lMtlNdXUT2LXGkJqvS7NjREEpUYtLhHl0pmjkd4-4EboICPbTsljwO6RWsxc/exec" target="_blank" rel="noopener">
-        <span>🧾 Product Check App</span>
-        <span class="arrow">↗</span>
-      </a>
-      <a class="link-btn secondary" href="https://script.google.com/macros/s/AKfycbwSpVYVw83xOf6RytjdtdaF7wjbsSveAXliWCj9IUfr3GOf6MnDa2v9g-nzC_2rmwWM/exec" target="_blank" rel="noopener">
-        <span>🛠 Product Check Admin</span>
-        <span class="arrow">↗</span>
-      </a>
-    </div>
-  </div>
-
   <!-- Stocktake -->
   <div class="card stock">
     <div class="card-head">
@@ -264,6 +269,35 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       </a>
     </div>
   </div>
+  <!-- Calendar & Notes -->
+  <div class="card calendar" id="cal-card">
+    <div class="card-head">
+      <div class="card-icon">📅</div>
+      <div>
+        <h2>Calendar &amp; Notes</h2>
+        <span class="tag">Notes with reminders 3, 2 &amp; 1 day before</span>
+      </div>
+    </div>
+    <div class="cal-reminders" id="cal-reminders"></div>
+    <div class="cal-nav">
+      <button type="button" class="cal-btn" id="cal-prev" aria-label="Previous month">&lsaquo;</button>
+      <strong id="cal-title"></strong>
+      <button type="button" class="cal-btn" id="cal-next" aria-label="Next month">&rsaquo;</button>
+      <button type="button" class="cal-btn cal-today" id="cal-today">Today</button>
+    </div>
+    <div class="cal-grid cal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+    <div class="cal-grid" id="cal-days"></div>
+    <div class="cal-editor">
+      <label for="cal-note" id="cal-selected">Select a date</label>
+      <textarea id="cal-note" rows="3" placeholder="Click a date, then type your note here..." maxlength="600" disabled></textarea>
+      <div class="cal-actions">
+        <button type="button" class="cal-btn cal-save" id="cal-save" disabled>Save note</button>
+        <button type="button" class="cal-btn cal-del" id="cal-del" disabled>Delete</button>
+        <span class="cal-status" id="cal-status"></span>
+      </div>
+    </div>
+  </div>
+
   <!-- Own Use Log -->
   <div class="card ownuse">
     <div class="card-head">
@@ -328,24 +362,6 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       </a>
       <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-PROCESSING-LOG/" target="_blank" rel="noopener">
         <span>🧾 Chicken Processing Log App</span>
-        <span class="arrow">↗</span>
-      </a>
-    </div>
-  </div>
-
-  <!-- Carton Label Generator -->
-  <div class="card carton">
-    <div class="card-head">
-      <div class="card-icon">🏷️</div>
-      <div>
-        <h2>Carton Label Generator</h2>
-        <span class="tag">Standalone tool</span>
-      </div>
-    </div>
-    <p class="desc">Generate and print sequenced carton labels for outbound shipments.</p>
-    <div class="links">
-      <a class="link-btn primary" href="https://itshbn-web.github.io/SHBN-TPL-GENERATOR/" target="_blank" rel="noopener">
-        <span>🧾 Carton Label Generator App</span>
         <span class="arrow">↗</span>
       </a>
     </div>
@@ -662,6 +678,104 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
     if (quoteDate) quoteDate.textContent = 'TODAY · ' + now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
   }
   renderDailyQuote();
+
+  // ---------- Calendar & notes (saved in this browser) ----------
+  (function () {
+    var KEY = 'shbn_ct_calendar_notes';
+    var notes = {};
+    try { notes = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { notes = {}; }
+    function persist() {
+      try { localStorage.setItem(KEY, JSON.stringify(notes)); return true; } catch (e) { return false; }
+    }
+    function key(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+    function parseKey(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+    function dayDiff(k) {
+      var t = new Date(); t = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+      return Math.round((parseKey(k) - t) / 86400000);
+    }
+    function pretty(k) { return parseKey(k).toLocaleDateString('en-GB', { weekday:'short', day:'2-digit', month:'short', year:'numeric' }); }
+    var today = new Date();
+    var view = new Date(today.getFullYear(), today.getMonth(), 1);
+    var selected = null;
+    var $ = function (id) { return document.getElementById(id); };
+    var daysEl = $('cal-days'), noteEl = $('cal-note'), saveBtn = $('cal-save'), delBtn = $('cal-del');
+    if (!daysEl) return;
+
+    function remindSet() {
+      var out = {};
+      Object.keys(notes).forEach(function (k) { var d = dayDiff(k); if (notes[k] && d >= 0 && d <= 3) out[k] = d; });
+      return out;
+    }
+
+    function renderReminders() {
+      var box = $('cal-reminders'); box.innerHTML = '';
+      var r = remindSet();
+      var keys = Object.keys(r).sort();
+      keys.forEach(function (k) {
+        var d = r[k];
+        var when = d === 0 ? 'TODAY' : d === 1 ? 'TOMORROW' : 'IN ' + d + ' DAYS';
+        var el = document.createElement('div');
+        el.className = 'cal-reminder';
+        var b = document.createElement('b'); b.textContent = '! ' + when + ' (' + pretty(k) + '): ';
+        el.appendChild(b); el.appendChild(document.createTextNode(notes[k]));
+        el.addEventListener('click', function () { view = new Date(parseKey(k).getFullYear(), parseKey(k).getMonth(), 1); select(k); });
+        box.appendChild(el);
+      });
+      box.classList.toggle('visible', keys.length > 0);
+    }
+
+    function renderGrid() {
+      $('cal-title').textContent = view.toLocaleDateString('en-GB', { month:'long', year:'numeric' });
+      daysEl.innerHTML = '';
+      var first = new Date(view.getFullYear(), view.getMonth(), 1);
+      var offset = (first.getDay() + 6) % 7; // Monday first
+      var start = new Date(first); start.setDate(1 - offset);
+      var rem = remindSet(), todayKey = key(new Date());
+      for (var i = 0; i < 42; i++) {
+        var d = new Date(start); d.setDate(start.getDate() + i);
+        var k = key(d);
+        var b = document.createElement('button');
+        b.type = 'button'; b.textContent = d.getDate(); b.dataset.k = k;
+        b.className = 'cal-day' + (d.getMonth() !== view.getMonth() ? ' other' : '') + (k === todayKey ? ' today' : '') +
+          (notes[k] ? ' has-note' : '') + (k in rem ? ' remind' : '') + (k === selected ? ' selected' : '');
+        if (notes[k]) b.title = notes[k];
+        b.addEventListener('click', function () { select(this.dataset.k); });
+        daysEl.appendChild(b);
+      }
+    }
+
+    function select(k) {
+      selected = k;
+      $('cal-selected').textContent = 'Note for ' + pretty(k);
+      noteEl.disabled = saveBtn.disabled = delBtn.disabled = false;
+      noteEl.value = notes[k] || '';
+      $('cal-status').textContent = '';
+      renderGrid();
+      noteEl.focus();
+    }
+
+    function refresh() { renderReminders(); renderGrid(); }
+
+    saveBtn.addEventListener('click', function () {
+      if (!selected) return;
+      var v = noteEl.value.trim();
+      if (v) notes[selected] = v; else delete notes[selected];
+      var ok = persist();
+      $('cal-status').textContent = ok ? (v ? 'Saved ✓' : 'Note cleared') : 'Could not save in this browser';
+      refresh();
+    });
+    delBtn.addEventListener('click', function () {
+      if (!selected) return;
+      delete notes[selected]; persist(); noteEl.value = '';
+      $('cal-status').textContent = 'Deleted'; refresh();
+    });
+    $('cal-prev').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); renderGrid(); });
+    $('cal-next').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); renderGrid(); });
+    $('cal-today').addEventListener('click', function () { var n = new Date(); view = new Date(n.getFullYear(), n.getMonth(), 1); select(key(n)); });
+
+    refresh();
+    setInterval(refresh, 60000); // keeps reminders correct after midnight
+  })();
 
   // ---------- Search/filter existing module cards ----------
   var moduleSearch = document.getElementById('module-search');
