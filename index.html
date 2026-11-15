@@ -138,12 +138,17 @@ header{
 .cal-btn:disabled{opacity:.4;cursor:not-allowed}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal-dow span{text-align:center;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-.cal-day{position:relative;aspect-ratio:1.35/1;min-height:30px;border:1px solid transparent;border-radius:8px;background:rgba(5,17,33,.5);color:var(--text);font:inherit;font-size:12.5px;cursor:pointer;padding:0}
+.cal-day{position:relative;min-height:62px;border:1px solid transparent;border-radius:8px;background:rgba(5,17,33,.5);color:var(--text);font:inherit;font-size:12px;cursor:pointer;padding:5px 5px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;overflow:hidden}
+.cal-day .n{font-size:12px;font-weight:700;line-height:1}
+.cal-day .p{margin-top:4px;font-size:9px;line-height:1.25;color:#bcd0ea;font-weight:500;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;width:100%}
+.cal-detail{grid-column:1/-1;padding:10px 12px;border-radius:9px;background:rgba(34,211,238,.1);border:1px solid var(--calendar);font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.cal-detail b{display:block;font-size:11px;color:#7df9ff;margin-bottom:3px;letter-spacing:.3px}
+.cal-detail.empty{color:var(--muted);font-style:italic}
 .cal-day:hover{border-color:var(--calendar)}
 .cal-day.other{opacity:.35}
 .cal-day.today{border-color:#38bdf8;box-shadow:inset 0 0 0 1px rgba(56,189,248,.5);font-weight:800}
 .cal-day.selected{background:rgba(34,211,238,.22);border-color:var(--calendar)}
-.cal-day.has-note::after{content:"";position:absolute;bottom:4px;left:50%;width:5px;height:5px;margin-left:-2.5px;border-radius:50%;background:#f0a63c;box-shadow:0 0 6px rgba(240,166,60,.8)}
+.cal-day.has-note::after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#f0a63c;box-shadow:0 0 6px rgba(240,166,60,.8)}
 .cal-day.remind::after{background:#fb7185;box-shadow:0 0 8px rgba(251,113,133,.9);animation:calBlink 1.2s ease-in-out infinite}
 @keyframes calBlink{50%{opacity:.25}}
 .cal-editor{display:flex;flex-direction:column;gap:7px;margin-top:auto}
@@ -729,20 +734,32 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       daysEl.innerHTML = '';
       var first = new Date(view.getFullYear(), view.getMonth(), 1);
       var offset = (first.getDay() + 6) % 7; // Monday first
+      var dim = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+      var rows = Math.ceil((offset + dim) / 7);
       var start = new Date(first); start.setDate(1 - offset);
       var rem = remindSet(), todayKey = key(new Date());
-      for (var i = 0; i < 42; i++) {
+      for (var i = 0; i < rows * 7; i++) {
         var d = new Date(start); d.setDate(start.getDate() + i);
         var k = key(d);
         var b = document.createElement('button');
-        b.type = 'button'; b.textContent = d.getDate(); b.dataset.k = k;
+        b.type = 'button'; b.dataset.k = k;
         b.className = 'cal-day' + (d.getMonth() !== view.getMonth() ? ' other' : '') + (k === todayKey ? ' today' : '') +
           (notes[k] ? ' has-note' : '') + (k in rem ? ' remind' : '') + (k === selected ? ' selected' : '');
-        if (notes[k]) b.title = notes[k];
+        var n = document.createElement('span'); n.className = 'n'; n.textContent = d.getDate(); b.appendChild(n);
+        if (notes[k]) { var p = document.createElement('span'); p.className = 'p'; p.textContent = notes[k]; b.appendChild(p); }
         b.addEventListener('click', function () { select(this.dataset.k); });
         daysEl.appendChild(b);
+        // expanded full-note panel directly under the selected date's week row
+        if ((i + 1) % 7 === 0 && selected && Math.floor(i / 7) === weekRowOf(selected, start)) {
+          var det = document.createElement('div');
+          det.className = 'cal-detail' + (notes[selected] ? '' : ' empty');
+          if (notes[selected]) { var h = document.createElement('b'); h.textContent = pretty(selected); det.appendChild(h); det.appendChild(document.createTextNode(notes[selected])); }
+          else det.textContent = pretty(selected) + ' - no note yet. Type one below.';
+          daysEl.appendChild(det);
+        }
       }
     }
+    function weekRowOf(k, start) { return Math.floor(Math.round((parseKey(k) - start) / 86400000) / 7); }
 
     function select(k) {
       selected = k;
