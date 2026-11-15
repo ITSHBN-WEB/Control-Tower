@@ -142,14 +142,15 @@ header{
 .cal-day .n{font-size:12px;font-weight:700;line-height:1}
 .cal-day .p{margin-top:4px;font-size:9px;line-height:1.25;color:#bcd0ea;font-weight:500;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;width:100%}
 .cal-wrap{position:relative}
-.cal-popup{position:absolute;z-index:30;width:min(230px,92%);max-height:190px;overflow:auto;padding:11px 13px;border-radius:12px;
+.cal-popup{position:absolute;z-index:30;width:min(250px,94%);max-height:230px;overflow:auto;padding:11px 13px;border-radius:12px;
   background:linear-gradient(155deg,#12365e,#0a2140);border:1px solid var(--calendar);box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 18px rgba(34,211,238,.25);
-  font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;
+  font-size:12.5px;line-height:1.5;word-break:break-word;
   opacity:0;visibility:hidden;pointer-events:none;transform:translateY(6px) scale(.96);transform-origin:top center;
   transition:opacity .2s ease,transform .22s cubic-bezier(.2,.8,.3,1),visibility 0s linear .22s}
 .cal-popup.open{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .2s ease,transform .22s cubic-bezier(.2,.8,.3,1),visibility 0s}
 .cal-popup.above{transform-origin:bottom center}
-.cal-popup b{display:block;font-size:11px;color:#7df9ff;margin-bottom:4px;letter-spacing:.3px}
+.cal-popup b{display:block;font-size:11px;color:#7df9ff;letter-spacing:.3px}
+.cal-popup .txt{white-space:pre-wrap}
 .cal-popup .none{color:var(--muted);font-style:italic}
 .cal-popup .esc{display:block;margin-top:8px;font-size:10px;color:var(--muted)}
 .cal-day:hover{border-color:var(--calendar)}
@@ -159,14 +160,18 @@ header{
 .cal-day.has-note::after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#f0a63c;box-shadow:0 0 6px rgba(240,166,60,.8)}
 .cal-day.remind::after{background:#fb7185;box-shadow:0 0 8px rgba(251,113,133,.9);animation:calBlink 1.2s ease-in-out infinite}
 @keyframes calBlink{50%{opacity:.25}}
-.cal-editor{display:flex;flex-direction:column;gap:7px;margin-top:auto}
-.cal-editor label{font-size:12px;font-weight:700;color:#a9bdd7}
-.cal-editor textarea{width:100%;resize:vertical;min-height:62px;background:rgba(5,17,33,.7);border:1px solid #1e3b5c;border-radius:9px;color:var(--text);font:inherit;font-size:12.5px;padding:9px 10px;outline:0}
-.cal-editor textarea:focus{border-color:var(--calendar)}
-.cal-actions{display:flex;align-items:center;gap:8px}
-.cal-save{border-color:rgba(34,211,238,.5)}
-.cal-del:hover:not(:disabled){border-color:#fb7185}
-.cal-status{font-size:11px;color:#6ee7b7}
+.cal-btn.cal-save{border-color:rgba(34,211,238,.5)}
+.cal-pop-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.cal-pop-head b{margin:0}
+.cal-icons{display:flex;gap:4px}
+.cal-icon{width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;padding:0;border-radius:7px;border:1px solid rgba(34,211,238,.35);background:rgba(5,17,33,.55);color:#bfeaff;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.cal-icon:hover{background:#17406b;border-color:var(--calendar)}
+.cal-icon.del:hover{border-color:#fb7185;color:#ffb3bd;background:rgba(251,113,133,.15)}
+.cal-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cal-popup textarea{width:100%;min-height:78px;resize:vertical;background:rgba(5,17,33,.75);border:1px solid #2a5a8a;border-radius:8px;color:var(--text);font:inherit;font-size:12.5px;padding:7px 8px;outline:0}
+.cal-popup textarea:focus{border-color:var(--calendar)}
+.cal-pop-actions{display:flex;gap:6px;margin-top:7px}
+.cal-pop-actions .cal-btn{padding:5px 10px;font-size:12px}
 .cal-reminders{display:none;flex-direction:column;gap:6px}
 .cal-reminders.visible{display:flex}
 .cal-reminder{font-size:12px;font-weight:700;color:#ff9aa9;padding:7px 10px;background:rgba(251,113,133,.09);border:1px solid rgba(251,113,133,.25);border-radius:8px;cursor:pointer;line-height:1.4}
@@ -302,15 +307,6 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
     <div class="cal-wrap" id="cal-wrap">
       <div class="cal-grid" id="cal-days"></div>
       <div class="cal-popup" id="cal-popup" role="dialog" aria-live="polite" aria-hidden="true"></div>
-    </div>
-    <div class="cal-editor">
-      <label for="cal-note" id="cal-selected">Select a date</label>
-      <textarea id="cal-note" rows="3" placeholder="Click a date, then type your note here..." maxlength="600" disabled></textarea>
-      <div class="cal-actions">
-        <button type="button" class="cal-btn cal-save" id="cal-save" disabled>Save note</button>
-        <button type="button" class="cal-btn cal-del" id="cal-del" disabled>Delete</button>
-        <span class="cal-status" id="cal-status"></span>
-      </div>
     </div>
   </div>
 
@@ -714,7 +710,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
     var view = new Date(today.getFullYear(), today.getMonth(), 1);
     var selected = null;
     var $ = function (id) { return document.getElementById(id); };
-    var daysEl = $('cal-days'), noteEl = $('cal-note'), saveBtn = $('cal-save'), delBtn = $('cal-del');
+    var daysEl = $('cal-days');
     if (!daysEl) return;
 
     function remindSet() {
@@ -762,7 +758,9 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
         daysEl.appendChild(b);
       }
     }
-    var popup = $('cal-popup'), popupOpen = false;
+    var popup = $('cal-popup'), popupOpen = false, editing = false;
+    var ICON_EDIT = '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+    var ICON_DEL = '<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>';
     function positionPopup() {
       var wrap = $('cal-wrap');
       var cell = selected && daysEl.querySelector('.cal-day[data-k="' + selected + '"]');
@@ -775,44 +773,55 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       popup.style.left = left + 'px'; popup.style.top = top + 'px';
       popup.classList.toggle('above', above);
     }
+    function mkIcon(cls, svg, label, fn) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'cal-icon ' + cls; b.innerHTML = svg; b.title = label; b.setAttribute('aria-label', label);
+      b.addEventListener('click', function (e) { e.stopPropagation(); fn(); });
+      return b;
+    }
+    function saveNote(v) {
+      v = v.trim();
+      if (v) notes[selected] = v; else delete notes[selected];
+      persist(); editing = false; refresh();
+    }
     function fillPopup() {
       popup.innerHTML = '';
-      var h = document.createElement('b'); h.textContent = pretty(selected); popup.appendChild(h);
-      var t = document.createElement('div');
-      if (notes[selected]) t.textContent = notes[selected]; else { t.className = 'none'; t.textContent = 'No note yet. Type one below.'; }
-      popup.appendChild(t);
-      var e = document.createElement('span'); e.className = 'esc'; e.textContent = 'Esc or click the date again to close'; popup.appendChild(e);
+      var head = document.createElement('div'); head.className = 'cal-pop-head';
+      var h = document.createElement('b'); h.textContent = pretty(selected); head.appendChild(h);
+      var icons = document.createElement('div'); icons.className = 'cal-icons';
+      icons.appendChild(mkIcon('edit', ICON_EDIT, 'Edit note', function () { editing = true; fillPopup(); positionPopup(); var t = popup.querySelector('textarea'); if (t) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); } }));
+      icons.appendChild(mkIcon('del', ICON_DEL, 'Clear note', function () { editing = false; delete notes[selected]; persist(); refresh(); }));
+      head.appendChild(icons); popup.appendChild(head);
+      if (editing) {
+        var ta = document.createElement('textarea'); ta.maxLength = 600; ta.placeholder = 'Type your note...'; ta.value = notes[selected] || '';
+        ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveNote(ta.value); } });
+        popup.appendChild(ta);
+        var act = document.createElement('div'); act.className = 'cal-pop-actions';
+        var sv = document.createElement('button'); sv.type = 'button'; sv.className = 'cal-btn cal-save'; sv.textContent = 'Save';
+        sv.addEventListener('click', function () { saveNote(ta.value); });
+        var cn = document.createElement('button'); cn.type = 'button'; cn.className = 'cal-btn'; cn.textContent = 'Cancel';
+        cn.addEventListener('click', function () { editing = false; fillPopup(); positionPopup(); });
+        act.appendChild(sv); act.appendChild(cn); popup.appendChild(act);
+      } else {
+        var t = document.createElement('div');
+        if (notes[selected]) { t.className = 'txt'; t.textContent = notes[selected]; }
+        else { t.className = 'none'; t.textContent = 'No note yet. Click the pencil to add one.'; }
+        popup.appendChild(t);
+      }
     }
-    function openPopup() { popupOpen = true; fillPopup(); popup.setAttribute('aria-hidden', 'false'); positionPopup(); popup.classList.add('open'); }
-    function closePopup() { popupOpen = false; popup.classList.remove('open'); popup.setAttribute('aria-hidden', 'true'); }
+    function openPopup() { popupOpen = true; editing = false; fillPopup(); popup.setAttribute('aria-hidden', 'false'); positionPopup(); popup.classList.add('open'); }
+    function closePopup() { popupOpen = false; editing = false; popup.classList.remove('open'); popup.setAttribute('aria-hidden', 'true'); }
     document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && popupOpen) closePopup(); });
 
     function select(k, forceOpen) {
       var again = (k === selected && popupOpen && !forceOpen);
       selected = k;
-      $('cal-selected').textContent = 'Note for ' + pretty(k);
-      noteEl.disabled = saveBtn.disabled = delBtn.disabled = false;
-      noteEl.value = notes[k] || '';
-      $('cal-status').textContent = '';
       renderGrid();
       if (again) closePopup(); else openPopup();
     }
 
     function refresh() { renderReminders(); renderGrid(); if (popupOpen) { fillPopup(); positionPopup(); } }
 
-    saveBtn.addEventListener('click', function () {
-      if (!selected) return;
-      var v = noteEl.value.trim();
-      if (v) notes[selected] = v; else delete notes[selected];
-      var ok = persist();
-      $('cal-status').textContent = ok ? (v ? 'Saved ✓' : 'Note cleared') : 'Could not save in this browser';
-      refresh();
-    });
-    delBtn.addEventListener('click', function () {
-      if (!selected) return;
-      delete notes[selected]; persist(); noteEl.value = '';
-      $('cal-status').textContent = 'Deleted'; refresh();
-    });
     $('cal-prev').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); closePopup(); renderGrid(); });
     $('cal-next').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); closePopup(); renderGrid(); });
     $('cal-today').addEventListener('click', function () { var n = new Date(); view = new Date(n.getFullYear(), n.getMonth(), 1); select(key(n), true); });
