@@ -141,9 +141,17 @@ header{
 .cal-day{position:relative;min-height:62px;border:1px solid transparent;border-radius:8px;background:rgba(5,17,33,.5);color:var(--text);font:inherit;font-size:12px;cursor:pointer;padding:5px 5px 4px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;overflow:hidden}
 .cal-day .n{font-size:12px;font-weight:700;line-height:1}
 .cal-day .p{margin-top:4px;font-size:9px;line-height:1.25;color:#bcd0ea;font-weight:500;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;width:100%}
-.cal-detail{grid-column:1/-1;padding:10px 12px;border-radius:9px;background:rgba(34,211,238,.1);border:1px solid var(--calendar);font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.cal-detail b{display:block;font-size:11px;color:#7df9ff;margin-bottom:3px;letter-spacing:.3px}
-.cal-detail.empty{color:var(--muted);font-style:italic}
+.cal-wrap{position:relative}
+.cal-popup{position:absolute;z-index:30;width:min(230px,92%);max-height:190px;overflow:auto;padding:11px 13px;border-radius:12px;
+  background:linear-gradient(155deg,#12365e,#0a2140);border:1px solid var(--calendar);box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 18px rgba(34,211,238,.25);
+  font-size:12.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;
+  opacity:0;visibility:hidden;pointer-events:none;transform:translateY(6px) scale(.96);transform-origin:top center;
+  transition:opacity .2s ease,transform .22s cubic-bezier(.2,.8,.3,1),visibility 0s linear .22s}
+.cal-popup.open{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .2s ease,transform .22s cubic-bezier(.2,.8,.3,1),visibility 0s}
+.cal-popup.above{transform-origin:bottom center}
+.cal-popup b{display:block;font-size:11px;color:#7df9ff;margin-bottom:4px;letter-spacing:.3px}
+.cal-popup .none{color:var(--muted);font-style:italic}
+.cal-popup .esc{display:block;margin-top:8px;font-size:10px;color:var(--muted)}
 .cal-day:hover{border-color:var(--calendar)}
 .cal-day.other{opacity:.35}
 .cal-day.today{border-color:#38bdf8;box-shadow:inset 0 0 0 1px rgba(56,189,248,.5);font-weight:800}
@@ -291,7 +299,10 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       <button type="button" class="cal-btn cal-today" id="cal-today">Today</button>
     </div>
     <div class="cal-grid cal-dow"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
-    <div class="cal-grid" id="cal-days"></div>
+    <div class="cal-wrap" id="cal-wrap">
+      <div class="cal-grid" id="cal-days"></div>
+      <div class="cal-popup" id="cal-popup" role="dialog" aria-live="polite" aria-hidden="true"></div>
+    </div>
     <div class="cal-editor">
       <label for="cal-note" id="cal-selected">Select a date</label>
       <textarea id="cal-note" rows="3" placeholder="Click a date, then type your note here..." maxlength="600" disabled></textarea>
@@ -723,7 +734,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
         el.className = 'cal-reminder';
         var b = document.createElement('b'); b.textContent = '! ' + when + ' (' + pretty(k) + '): ';
         el.appendChild(b); el.appendChild(document.createTextNode(notes[k]));
-        el.addEventListener('click', function () { view = new Date(parseKey(k).getFullYear(), parseKey(k).getMonth(), 1); select(k); });
+        el.addEventListener('click', function () { view = new Date(parseKey(k).getFullYear(), parseKey(k).getMonth(), 1); select(k, true); });
         box.appendChild(el);
       });
       box.classList.toggle('visible', keys.length > 0);
@@ -749,29 +760,45 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
         if (notes[k]) { var p = document.createElement('span'); p.className = 'p'; p.textContent = notes[k]; b.appendChild(p); }
         b.addEventListener('click', function () { select(this.dataset.k); });
         daysEl.appendChild(b);
-        // expanded full-note panel directly under the selected date's week row
-        if ((i + 1) % 7 === 0 && selected && Math.floor(i / 7) === weekRowOf(selected, start)) {
-          var det = document.createElement('div');
-          det.className = 'cal-detail' + (notes[selected] ? '' : ' empty');
-          if (notes[selected]) { var h = document.createElement('b'); h.textContent = pretty(selected); det.appendChild(h); det.appendChild(document.createTextNode(notes[selected])); }
-          else det.textContent = pretty(selected) + ' - no note yet. Type one below.';
-          daysEl.appendChild(det);
-        }
       }
     }
-    function weekRowOf(k, start) { return Math.floor(Math.round((parseKey(k) - start) / 86400000) / 7); }
+    var popup = $('cal-popup'), popupOpen = false;
+    function positionPopup() {
+      var wrap = $('cal-wrap');
+      var cell = selected && daysEl.querySelector('.cal-day[data-k="' + selected + '"]');
+      if (!cell) { closePopup(); return; }
+      var w = popup.offsetWidth, h = popup.offsetHeight;
+      var left = cell.offsetLeft + cell.offsetWidth / 2 - w / 2;
+      left = Math.max(0, Math.min(left, wrap.offsetWidth - w));
+      var top = cell.offsetTop + cell.offsetHeight + 8, above = false;
+      if (top + h > wrap.offsetHeight + 30) { top = cell.offsetTop - h - 8; above = true; }
+      popup.style.left = left + 'px'; popup.style.top = top + 'px';
+      popup.classList.toggle('above', above);
+    }
+    function fillPopup() {
+      popup.innerHTML = '';
+      var h = document.createElement('b'); h.textContent = pretty(selected); popup.appendChild(h);
+      var t = document.createElement('div');
+      if (notes[selected]) t.textContent = notes[selected]; else { t.className = 'none'; t.textContent = 'No note yet. Type one below.'; }
+      popup.appendChild(t);
+      var e = document.createElement('span'); e.className = 'esc'; e.textContent = 'Esc or click the date again to close'; popup.appendChild(e);
+    }
+    function openPopup() { popupOpen = true; fillPopup(); popup.setAttribute('aria-hidden', 'false'); positionPopup(); popup.classList.add('open'); }
+    function closePopup() { popupOpen = false; popup.classList.remove('open'); popup.setAttribute('aria-hidden', 'true'); }
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && popupOpen) closePopup(); });
 
-    function select(k) {
+    function select(k, forceOpen) {
+      var again = (k === selected && popupOpen && !forceOpen);
       selected = k;
       $('cal-selected').textContent = 'Note for ' + pretty(k);
       noteEl.disabled = saveBtn.disabled = delBtn.disabled = false;
       noteEl.value = notes[k] || '';
       $('cal-status').textContent = '';
       renderGrid();
-      noteEl.focus();
+      if (again) closePopup(); else openPopup();
     }
 
-    function refresh() { renderReminders(); renderGrid(); }
+    function refresh() { renderReminders(); renderGrid(); if (popupOpen) { fillPopup(); positionPopup(); } }
 
     saveBtn.addEventListener('click', function () {
       if (!selected) return;
@@ -786,9 +813,9 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       delete notes[selected]; persist(); noteEl.value = '';
       $('cal-status').textContent = 'Deleted'; refresh();
     });
-    $('cal-prev').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); renderGrid(); });
-    $('cal-next').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); renderGrid(); });
-    $('cal-today').addEventListener('click', function () { var n = new Date(); view = new Date(n.getFullYear(), n.getMonth(), 1); select(key(n)); });
+    $('cal-prev').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); closePopup(); renderGrid(); });
+    $('cal-next').addEventListener('click', function () { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); closePopup(); renderGrid(); });
+    $('cal-today').addEventListener('click', function () { var n = new Date(); view = new Date(n.getFullYear(), n.getMonth(), 1); select(key(n), true); });
 
     refresh();
     setInterval(refresh, 60000); // keeps reminders correct after midnight
