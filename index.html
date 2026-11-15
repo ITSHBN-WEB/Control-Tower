@@ -142,6 +142,8 @@ header{
 .cal-day .n{font-size:12px;font-weight:700;line-height:1}
 .cal-day .p{margin-top:4px;font-size:9px;line-height:1.25;color:#bcd0ea;font-weight:500;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;width:100%}
 .cal-wrap{position:relative}
+.cal-sync{margin-top:auto;font-size:10.5px;color:var(--muted)}
+.cal-sync.ok{color:#6ee7b7}.cal-sync.err{color:#ff9aa9}.cal-sync.wait{color:#9ab0ce}
 .cal-popup{position:absolute;z-index:30;width:min(250px,94%);max-height:230px;overflow:auto;padding:11px 13px;border-radius:12px;
   background:linear-gradient(155deg,#12365e,#0a2140);border:1px solid var(--calendar);box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 18px rgba(34,211,238,.25);
   font-size:12.5px;line-height:1.5;word-break:break-word;
@@ -308,6 +310,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       <div class="cal-grid" id="cal-days"></div>
       <div class="cal-popup" id="cal-popup" role="dialog" aria-live="polite" aria-hidden="true"></div>
     </div>
+    <div class="cal-sync" id="cal-sync"></div>
   </div>
 
   <!-- Own Use Log -->
@@ -693,11 +696,61 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
 
   // ---------- Calendar & notes (saved in this browser) ----------
   (function () {
-    var KEY = 'shbn_ct_calendar_notes';
-    var notes = {};
+    // Paste your deployed Apps Script web app URL here (see Code.gs). Leave empty to keep notes on this device only.
+    var CAL_API_URL = 'https://script.google.com/macros/s/AKfycbzf5vNeIrNjPV-zQ9yYVUctekNWgnyXI1gU-sTFlzJih--19Opdqja34Xg-ld9ZEbYG/exec';
+    var KEY = 'shbn_ct_calendar_notes', DIRTY_KEY = 'shbn_ct_calendar_dirty';
+    var notes = {}, dirty = {};
     try { notes = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { notes = {}; }
+    try { dirty = JSON.parse(localStorage.getItem(DIRTY_KEY) || '{}') || {}; } catch (e) { dirty = {}; }
     function persist() {
-      try { localStorage.setItem(KEY, JSON.stringify(notes)); return true; } catch (e) { return false; }
+      try { localStorage.setItem(KEY, JSON.stringify(notes)); localStorage.setItem(DIRTY_KEY, JSON.stringify(dirty)); return true; } catch (e) { return false; }
+    }
+    function setSync(state) {
+      var el = document.getElementById('cal-sync'); if (!el) return;
+      var map = {
+        local: ['Notes are saved on this device only (shared sync not set up).', 'local'],
+        ok: ['Shared notes - synced', 'ok'],
+        syncing: ['Syncing...', 'wait'],
+        error: ['Offline or sync error - changes kept and will retry', 'err']
+      };
+      el.textContent = map[state][0]; el.className = 'cal-sync ' + map[state][1];
+    }
+    // Save/clear one date: update locally right away, then push to the shared sheet.
+    function setNote(k, v) {
+      v = (v || '').trim();
+      if (v) notes[k] = v; else delete notes[k];
+      if (CAL_API_URL) dirty[k] = v;
+      persist();
+      if (CAL_API_URL) flushDirty();
+    }
+    function flushDirty() {
+      var keys = Object.keys(dirty);
+      if (!CAL_API_URL || !keys.length) return Promise.resolve();
+      setSync('syncing');
+      return Promise.all(keys.map(function (k) {
+        var sent = dirty[k];
+        return fetch(CAL_API_URL, { method: 'POST', body: JSON.stringify({ action: 'save', date: k, note: sent }) })
+          .then(function (r) { return r.json(); })
+          .then(function (res) {
+            if (!res || !res.ok) throw new Error('save failed');
+            if (dirty[k] === sent) delete dirty[k];
+          });
+      })).then(function () { persist(); setSync('ok'); }).catch(function () { persist(); setSync('error'); });
+    }
+    var syncing = false;
+    function pull() {
+      if (!CAL_API_URL || syncing || editing) return Promise.resolve();
+      syncing = true;
+      return flushDirty().then(function () {
+        return fetch(CAL_API_URL + '?action=list&_=' + Date.now()).then(function (r) { return r.json(); });
+      }).then(function (res) {
+        if (!res || !res.notes) throw new Error('bad response');
+        var merged = {};
+        Object.keys(res.notes).forEach(function (k) { if (res.notes[k]) merged[k] = res.notes[k]; });
+        Object.keys(dirty).forEach(function (k) { if (dirty[k]) merged[k] = dirty[k]; else delete merged[k]; });
+        if (JSON.stringify(merged) !== JSON.stringify(notes)) { notes = merged; persist(); if (!editing) refresh(); }
+        setSync(Object.keys(dirty).length ? 'error' : 'ok');
+      }).catch(function () { setSync('error'); }).then(function () { syncing = false; });
     }
     function key(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
     function parseKey(k) { var p = k.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
@@ -780,9 +833,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       return b;
     }
     function saveNote(v) {
-      v = v.trim();
-      if (v) notes[selected] = v; else delete notes[selected];
-      persist(); editing = false; refresh();
+      setNote(selected, v); editing = false; refresh();
     }
     function fillPopup() {
       popup.innerHTML = '';
@@ -790,7 +841,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       var h = document.createElement('b'); h.textContent = pretty(selected); head.appendChild(h);
       var icons = document.createElement('div'); icons.className = 'cal-icons';
       icons.appendChild(mkIcon('edit', ICON_EDIT, 'Edit note', function () { editing = true; fillPopup(); positionPopup(); var t = popup.querySelector('textarea'); if (t) { t.focus(); t.setSelectionRange(t.value.length, t.value.length); } }));
-      icons.appendChild(mkIcon('del', ICON_DEL, 'Clear note', function () { editing = false; delete notes[selected]; persist(); refresh(); }));
+      icons.appendChild(mkIcon('del', ICON_DEL, 'Clear note', function () { editing = false; setNote(selected, ''); refresh(); }));
       head.appendChild(icons); popup.appendChild(head);
       if (editing) {
         var ta = document.createElement('textarea'); ta.maxLength = 600; ta.placeholder = 'Type your note...'; ta.value = notes[selected] || '';
@@ -828,6 +879,13 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
 
     refresh();
     setInterval(refresh, 60000); // keeps reminders correct after midnight
+    setSync(CAL_API_URL ? 'syncing' : 'local');
+    if (CAL_API_URL) {
+      pull();
+      setInterval(pull, 30000); // pick up notes saved on other devices
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) pull(); });
+      window.addEventListener('online', pull);
+    }
   })();
 
   // ---------- Search/filter existing module cards ----------
