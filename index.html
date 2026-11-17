@@ -702,7 +702,7 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
   // ---------- Calendar & notes (saved in this browser) ----------
   (function () {
     // Paste your deployed Apps Script web app URL here (see Code.gs). Leave empty to keep notes on this device only.
-    var CAL_API_URL = '';
+    var CAL_API_URL = 'https://script.google.com/macros/s/AKfycbzf5vNeIrNjPV-zQ9yYVUctekNWgnyXI1gU-sTFlzJih--19Opdqja34Xg-ld9ZEbYG/exec';
     var KEY = 'shbn_ct_calendar_notes', DIRTY_KEY = 'shbn_ct_calendar_dirty';
     var notes = {}, dirty = {};
     try { notes = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { notes = {}; }
