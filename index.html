@@ -364,24 +364,25 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       </a>
     </div>
   </div>
-  <!-- Chicken Processing Log -->
+  <!-- FPRS - Fresh Processing Records System -->
   <div class="card chicken">
     <div class="card-head">
       <div class="card-icon">🐔</div>
       <div>
-        <h2>Chicken Processing Log</h2>
+        <h2>FPRS - Fresh Processing Records System</h2>
         <span class="tag">Fresh Market transformation</span>
       </div>
     </div>
-    <p class="desc">Log chicken processing entries and track items pending IT / Material Document processing.</p>
+    <p class="desc">Log chicken cut parts and mixed fruit BB entries and track items pending IT / Material Document processing.</p>
     <p class="pending-notice" id="chicken-pending-notice"></p>
+    <p class="pending-notice" id="fruit-pending-notice"></p>
     <div class="links">
       <a class="link-btn primary" href="https://docs.google.com/spreadsheets/d/14g-JzeCkFKwwhSB8_F_ImzkZgAuuJdz3_6t13WTFcDM/edit?gid=0#gid=0" target="_blank" rel="noopener">
-        <span>📄 Google Sheet</span>
+        <span>📄 Google Sheet - Legacy</span>
         <span class="arrow">↗</span>
       </a>
-      <a class="link-btn secondary" href="https://itshbn-web.github.io/SHBN-PROCESSING-LOG/" target="_blank" rel="noopener">
-        <span>🧾 Chicken Processing Log App</span>
+      <a class="link-btn secondary" href="https://fresh-processing-records-system.vercel.app/#/dashboard" target="_blank" rel="noopener">
+        <span>🧾 SHBN – Fresh Processing Records System</span>
         <span class="arrow">↗</span>
       </a>
     </div>
@@ -574,12 +575,18 @@ footer{max-width:1500px;margin:20px auto 0;text-align:center;color:#7086a4;font-
       ]
     },
     {
-      // Chicken Processing Log — pending IT/Key-In processing count
-      url: 'https://script.google.com/macros/s/AKfycbyhhFfjKZUUkrXq9pI1I6MNnTtL4WEx-7j1MvS3AkKwUAZ4YekDtr-ZOEi4Ti_UcA/exec?action=pending',
+      // FPRS (Fresh Processing Records System) — pending counts for both
+      // records, read live from the Neon/Postgres database via the FPRS Vercel API.
+      // (Replaces the old Chicken Processing Log Apps Script endpoint.)
+      url: 'https://fresh-processing-records-system.vercel.app/api/pending',
       notices: [
         { elId: 'chicken-pending-notice', formatter: function (data) {
           var c = data.pendingCount || 0;
-          return c > 0 ? ('! ' + c + ' pending transaction' + pluralS(c)) : '';
+          return c > 0 ? ('! ' + c + ' pending Chicken Cut Parts transaction' + pluralS(c)) : '';
+        } },
+        { elId: 'fruit-pending-notice', formatter: function (data) {
+          var c = data.fruitPendingCount || 0;
+          return c > 0 ? ('! ' + c + ' pending Mixed Fruit BB transaction' + pluralS(c)) : '';
         } }
       ]
     },
